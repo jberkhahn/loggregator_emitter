@@ -194,6 +194,18 @@ describe LoggregatorEmitter do
         messages = @server.messages
         expect(messages.length).to eq 4
       end
+
+      it "sends messages with unicode characters " do
+        emitter = make_emitter("localhost")
+        message = "測試".encode("utf-8")
+        emitter.send(emit_method, "my_app_id", message)
+
+        sleep 0.5
+
+        messages = @server.messages
+        expect(messages.length).to eq 1
+        expect(messages[0].message.force_encoding("utf-8")).to eq "測試"
+      end
     end
   end
 
